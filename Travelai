@@ -1,1 +1,31 @@
+from chatterbot import ChatBot
+from chatterbot.trainers import ChatterBotCorpusTrainer
+from flask import Flask, request, jsonify
 
+app = Flask(__name__)
+
+# Create a new ChatBot instance
+travel_bot = ChatBot('TravelBot')
+
+# Create a new trainer for the ChatBot
+trainer = ChatterBotCorpusTrainer(travel_bot)
+
+# Train the ChatBot on English language data
+trainer.train('chatterbot.corpus.english')
+
+# Define a route for the chat endpoint
+@app.route('/chat', methods=['POST'])
+def chat():
+    # Get user input from the request
+    user_input = request.json['user_input']
+
+    # Get the response from the chatbot
+    response = travel_bot.get_response(user_input)
+
+    # Return the response as JSON
+    return jsonify({'response': str(response)})
+
+# Run the Flask app
+if __name__ == '__main__':
+    app.run(debug=True)
+pip install chatterbot flask
